@@ -6,13 +6,6 @@
         <h1 class="text-center mb-4 fw-bold">Public Cossack Image Gallery</h1>
         <div class="card shadow-sm">
           <div class="card-body">
-            <div class="d-flex justify-content-center mb-4">
-              <button @click="fetchPublicImages" class="btn btn-primary" :disabled="isLoading">
-                <span v-if="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                {{ isLoading ? ' Loading...' : 'Fetch Public Images' }}
-              </button>
-            </div>
-
             <div v-if="errorMessage" class="alert alert-danger text-center">{{ errorMessage }}</div>
 
             <div v-if="!isLoading && images.length === 0 && !errorMessage" class="alert alert-info text-center">
@@ -29,6 +22,7 @@
                   <th scope="col">Translated Name</th>
                   <th scope="col">Recognized Text</th>
                   <th scope="col">Creation Date</th>
+                  <th scope="col" class="text-center">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -45,6 +39,16 @@
                     <p class="text-wrap" style="min-width: 200px;">{{ image.text }}</p>
                   </td>
                   <td>{{ image.creationDate }}</td>
+                  <td>
+                    <div class="d-flex flex-column align-items-center gap-2">
+                      <button @click="openImageDetails(image.id)" class="btn btn-outline-info btn-sm w-100">
+                        Open Record
+                      </button>
+                      <button @click="deleteImage(image.id)" class="btn btn-outline-danger btn-sm w-100">
+                        Delete
+                      </button>
+                    </div>
+                  </td>
                 </tr>
                 </tbody>
               </table>
@@ -99,8 +103,24 @@ export default {
         return 'https://placehold.co/100x100/eee/ccc?text=No+Image';
       }
       return `data:${fileType};base64,${base64Data}`;
+    },
+    openImageDetails(imageId) {
+      this.$router.push({ name: `CertificateInfo`, path: '/cossak/:imageId', params: { imageId } });
+    },
+    async deleteImage(imageId) {
+      if(!confirm('Are you sure you want to delete this image?')) {
+        return;
+      }
+
+      this.errorMessage = '';
+
+      await api.delete(`/cossak/${imageId}`);
+
+      this.images = this.images.filter(image => image.id !== imageId);
     }
   },
+
+
   mounted() {
     this.fetchPublicImages();
   }
