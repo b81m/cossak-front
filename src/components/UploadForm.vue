@@ -1,26 +1,28 @@
 <template>
   <HeaderForPage/>
-  <div class="container mt-5">
+  <div class="container mt-4">
     <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-header">Загрузка изображения</div>
+      <div class="col-12 col-sm-11 col-md-8 col-lg-7 col-xl-6">
+        <div class="card shadow-sm">
+          <div class="card-header text-center fw-bold">Загрузка изображения</div>
           <div class="card-body">
             <form @submit.prevent="onUpload">
               <div class="mb-3">
                 <label for="fileInput" class="form-label">Выберите файл</label>
                 <input class="form-control" type="file" id="fileInput" @change="onFileSelected" accept="image/*">
               </div>
-              <button type="submit" class="btn btn-primary" :disabled="!selectedFile || isLoading">
+              <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary px-4" :disabled="!selectedFile || isLoading">
                 <span v-if="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 {{ isLoading ? ' Загрузка...' : 'Загрузить' }}
-              </button>
+                </button>
+              </div>
             </form>
 
             <div v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
 
             <div v-if="imageUrl" class="mt-4 text-center">
-              <h3 class="mb-3">Обработанное изображение:</h3>
+              <h3 class="h5 mb-3">Обработанное изображение:</h3>
               <figure class="figure">
                 <img :src="imageUrl" class="figure-img img-fluid rounded shadow" alt="Uploaded Image">
                 <figcaption v-if="imageName" class="figure-caption text-center">{{ imageName }}</figcaption>
@@ -93,8 +95,5 @@ export default {
   }
 };
 </script>
-
-
 <style scoped>
-
 </style>

@@ -1,18 +1,20 @@
 <template>
-  <header class="bg-dark text-white p-3 mb-5 shadow-sm">
-    <div class="container d-flex justify-content-between align-items-center">
-      <h3 class="m-0 fw-bold">Cossack Image Tool</h3>
-      <nav class="d-flex flex-row">
-        <router-link to="/upload" class="btn btn-outline-light me-2">Upload Form</router-link>
-        <router-link to="/all" class="btn btn-outline-light">Public Gallery</router-link>
-        <div v-if="username" class="ms-2 align-self-center ">
-          <span >
-            Hello, {{ username }}
-          </span>
+  <header class="app-header mb-5 shadow-sm">
+    <div class="container header-content">
+      <h3 class="m-0 fw-bold">Расшифровка казачьих грамот</h3>
+
+      <nav class="header-nav">
+        <router-link to="/upload" class="btn btn-outline-light">Загрузка</router-link>
+        <router-link to="/all" class="btn btn-outline-light">Галерея</router-link>
+
+        <div v-if="username" class="user-info">
+          <span class="user-label">Пользователь</span>
+          <span class="user-name">{{ username }}</span>
         </div>
-        <div>
-          <a @click="handleLogout">Logout</a>
-        </div>
+
+        <button type="button" class="btn btn-light logout-button" @click="handleLogout">
+          Выйти
+        </button>
       </nav>
     </div>
   </header>
@@ -31,7 +33,7 @@ export default {
   methods: {
     async fetchUsername() {
       try {
-        const response = await api.get('/user/name');
+        const response = await api.get('/username');
         if (typeof response.data === 'string' && response.data) {
           this.username = response.data;
         } else if (typeof response.data === 'object' && response.data.username) {
@@ -45,9 +47,14 @@ export default {
       }
     },
     async handleLogout() {
-      await api.post('/logout')
-      localStorage.removeItem('user-token');
-      this.$router.push('/');
+      try {
+        await api.post('/logout');
+      } catch (error) {
+        console.error('Не удалось выполнить выход на сервере:', error);
+      } finally {
+        localStorage.removeItem('user-token');
+        this.$router.push('/');
+      }
     }
   },
   mounted() {
@@ -58,5 +65,62 @@ export default {
 
 
 <style scoped>
+.app-header {
+  background: #1f2937;
+  color: #fff;
+  padding: 18px 0;
+}
+
+.header-content {
+  align-items: center;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+}
+
+.header-nav {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.user-info {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  display: flex;
+  gap: 8px;
+  min-height: 38px;
+  padding: 6px 12px;
+}
+
+.user-label {
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+.user-name {
+  font-weight: 700;
+}
+
+.logout-button {
+  color: #1f2937;
+  font-weight: 700;
+  min-width: 90px;
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .header-nav {
+    justify-content: flex-start;
+  }
+}
 
 </style>

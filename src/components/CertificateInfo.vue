@@ -1,42 +1,49 @@
 <template>
   <HeaderForPage/>
-  <div class="page-container">
+  <div class="container mb-5">
+    <h1 class="text-center fw-bold mb-4">Информация о грамоте</h1>
+
     <div v-if="errorMessage" class="alert alert-danger text-center">{{ errorMessage }}</div>
     <div v-if="!isLoading && !errorMessage">
-      <div class="container">
-        <div class="d-flex flex-row justify-content-center">
-          <div class="cards-wrapper">
-            <div class="d-flex flex-row align-items-center">
-              <div class="card p-2 rounded" v-if="originalImage">
-                <div class="d-flex justify-content-center">
-                  <h2 class="image-label">Original Image</h2>
-                </div>
-                <img :src="createImageUrl(originalImage, fileType)" alt="Original Image" class="table-image rounded"
-                     width="300" height="400"/>
-              </div>
-              <div class="card ms-3 p-2 rounded" v-if="translatedImage">
-                <div class="d-flex justify-content-center">
-                  <h2 class="image-label">Translated Image</h2>
-                </div>
-                <img :src="createImageUrl(translatedImage, fileType)" alt="Translated Image" class="table-image rounded"
-                     width="300" height="400">
-              </div>
+      <div class="row justify-content-center g-4">
+        <div class="col-12 col-lg-6 col-xl-5" v-if="originalImage">
+          <div class="card h-100 shadow-sm">
+            <div class="card-header text-center fw-bold">Исходное изображение</div>
+            <div class="card-body text-center">
+              <img
+                  :src="createImageUrl(originalImage, fileType)"
+                  alt="Исходное изображение"
+                  class="certificate-image rounded img-fluid"
+              />
             </div>
           </div>
         </div>
 
-        <div class="d-flex flex-row justify-content-center mt-3">
-          <div class="card text-content-card p-3" v-if="text">
-            <div class="card-content">
-              <h3>Recognized Text</h3>
-              <p>{{ text }}</p>
+        <div class="col-12 col-lg-6 col-xl-5" v-if="translatedImage">
+          <div class="card h-100 shadow-sm">
+            <div class="card-header text-center fw-bold">Обработанное изображение</div>
+            <div class="card-body text-center">
+              <img
+                  :src="createImageUrl(translatedImage, fileType)"
+                  alt="Обработанное изображение"
+                  class="certificate-image rounded img-fluid"
+              >
             </div>
           </div>
         </div>
+      </div>
 
+      <div class="row justify-content-center mt-4" v-if="text">
+        <div class="col-12 col-xl-10">
+          <div class="card shadow-sm">
+            <div class="card-header text-center fw-bold">Распознанный текст</div>
+            <div class="card-body">
+              <p class="mb-0 text-break">{{ text }}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -83,7 +90,7 @@ export default {
     },
     createImageUrl(base64Data, fileType) {
       if (!base64Data || !fileType) {
-        return 'https://placehold.co/100x100/eee/ccc?text=No+Image';
+        return 'https://placehold.co/100x100/eee/ccc?text=Нет+изображения';
       }
       return `data:${fileType};base64,${base64Data}`;
     },
@@ -96,5 +103,10 @@ export default {
 </script>
 
 <style scoped>
+.certificate-image {
+  max-height: 560px;
+  object-fit: contain;
+  width: 100%;
+}
 
 </style>
