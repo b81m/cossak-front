@@ -3,49 +3,43 @@
   <div class="container mt-5 mb-5">
     <div class="row">
       <div class="col-12">
-        <h1 class="text-center mb-4 fw-bold">Public Cossack Image Gallery</h1>
+        <h1 class="text-center mb-4 fw-bold">Галерея загруженных грамот</h1>
         <div class="card shadow-sm">
           <div class="card-body">
             <div v-if="errorMessage" class="alert alert-danger text-center">{{ errorMessage }}</div>
-
             <div v-if="!isLoading && images.length === 0 && !errorMessage" class="alert alert-info text-center">
-              No public images found. Click the button to fetch records.
+              Загруженные грамоты не найдены.
             </div>
-
             <div v-if="images.length > 0" class="table-responsive">
               <table class="table table-striped table-hover align-middle">
                 <thead class="table-dark">
                 <tr>
-                  <th scope="col">Original Image</th>
-                  <th scope="col">Original Name</th>
-                  <th scope="col">Translated Image</th>
-                  <th scope="col">Translated Name</th>
-                  <th scope="col">Recognized Text</th>
-                  <th scope="col">Creation Date</th>
-                  <th scope="col" class="text-center">Actions</th>
+                  <th scope="col" class="text-center">Исходное изображение</th>
+                  <th scope="col" class="text-center">Обработанное изображение</th>
+                  <th scope="col" class="text-center">Распознанный текст</th>
+                  <th scope="col" class="text-center text-nowrap">Дата создания</th>
+                  <th scope="col" class="text-center">Действия</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="(image, index) in images" :key="index">
                   <td>
-                    <img :src="createImageUrl(image.originalImage, image.fileType)" alt="Original Image" class="table-image rounded" width="150" height="200">
+                    <img :src="createImageUrl(image.originalImage, image.fileType)" alt="Исходное изображение" class="table-image rounded" width="150" height="200">
                   </td>
-                  <td>{{ image.originalImageName }}</td>
                   <td>
-                    <img :src="createImageUrl(image.translatedImage, image.fileType)" alt="Translated Image" class="table-image rounded " width="150" height="200">
+                    <img :src="createImageUrl(image.translatedImage, image.fileType)" alt="Обработанное изображение" class="table-image rounded " width="150" height="200">
                   </td>
-                  <td>{{ image.translatedImageName }}</td>
                   <td>
                     <p class="text-wrap" style="min-width: 200px;">{{ image.text }}</p>
                   </td>
-                  <td>{{ image.creationDate }}</td>
+                  <td class="text-nowrap">{{ image.creationDate }}</td>
                   <td>
                     <div class="d-flex flex-column align-items-center gap-2">
                       <button @click="openImageDetails(image.id)" class="btn btn-outline-info btn-sm w-100">
-                        Open Record
+                        Открыть
                       </button>
                       <button @click="deleteImage(image.id)" class="btn btn-outline-danger btn-sm w-100">
-                        Delete
+                        Удалить
                       </button>
                     </div>
                   </td>
@@ -85,14 +79,14 @@ export default {
         if (response.data && Array.isArray(response.data)) {
           this.images = response.data;
         } else {
-          throw new Error("Invalid data format received from the server.");
+          throw new Error("Сервер вернул некорректный формат данных.");
         }
 
       } catch (error) {
-        console.error('Error fetching public images:', error);
+        console.error('Ошибка при загрузке грамот:', error);
         this.errorMessage = (error.response && error.response.data && error.response.data.message)
             ? error.response.data.message
-            : 'An unexpected error occurred. Please try again later.';
+            : 'Не удалось загрузить список грамот. Попробуйте позже.';
       } finally {
         this.isLoading = false;
       }
@@ -108,7 +102,7 @@ export default {
       this.$router.push({ name: `CertificateInfo`, path: '/cossak/:imageId', params: { imageId } });
     },
     async deleteImage(imageId) {
-      if(!confirm('Are you sure you want to delete this image?')) {
+      if(!confirm('Вы уверены, что хотите удалить эту грамоту?')) {
         return;
       }
 
@@ -119,15 +113,10 @@ export default {
       this.images = this.images.filter(image => image.id !== imageId);
     }
   },
-
-
   mounted() {
     this.fetchPublicImages();
   }
 };
 </script>
-
-
 <style scoped>
-
 </style>
